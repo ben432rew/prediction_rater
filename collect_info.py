@@ -1,5 +1,6 @@
 import requests
 import bs4
+import json
 
 class Scrape_predictwallstreet(object):
     def __init__(self):
@@ -12,7 +13,6 @@ class Scrape_predictwallstreet(object):
         todays = []
         rows = self.soup.select("div.one-day-forecasts div table tbody tr")
         for row in rows:
-            print (row)
             prediction = {}
             symbol = row.select('td h3')[0].get_text()
             pred = row.select('td span')[0].get_text()
@@ -22,8 +22,42 @@ class Scrape_predictwallstreet(object):
         return todays
 
 
+#rule:1 buy, rule:2 sell
 class Scrape_stockforcasting(object):
-    pass
+    def __init__(self, symbols):    
+        self.symbols = symbols
+        self.predictions = self.get_predictions()
 
-h = Scrape_predictwallstreet()
-print(h.todays_predictions)
+    def get_predictions(self):
+        all_preds = []
+        headers = {"X-AjaxPro-Method": "PredictCompanyTrial"}
+        for symbol in self.symbols:
+            pred = {}
+            res = requests.post("http://www.stock-forecasting.com/ajaxpro/ForeCore.PredictionHelper,ForeCore.ashx", data=json.dumps({"symbol":symbol}), headers=headers)
+            html_str = res.text
+            split_list = html_str.split(":")
+            rule = split_list[13][:1]
+            pred["symbol"] = symbol
+            pred["prediction"] = "up" if rule == '1' else 'down'
+            all_preds.append(pred)
+        return all_preds
+
+
+class Stock_history(object):
+    def __init__(self, symbols):
+        self.symbols = symbols
+        self.history = self.get_yesterday()
+
+    def get_yesterday(self):
+        hist = []
+        for symbol in self.symbols:
+            stock = {}
+            res = requests.get('https://www.quandl.com/c/stocks/' + symbol)
+            html_string = res.text
+            soup = bs4.BeautifulSoup(html_string)
+            change = soup.select("h1 span")[0].get_text()
+            stock["symbol"] = symbol
+            stock["change"] = change
+            hist.append(stock)
+        return hist
+        

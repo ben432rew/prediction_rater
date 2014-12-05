@@ -4,6 +4,10 @@ import datetime
 default_db = 'pred.db'
 
 
+
+
+#predictions should be weighted by how much they changed, not just whether
+#they went up or down
 class Evaluation(object):
     @staticmethod
     def get_all_todays():
@@ -91,3 +95,14 @@ class Database(object):
         conn.commit()
         c.close()
         return predictions
+
+    @staticmethod
+    def get_symbols_by_date(date):
+        conn = sqlite3.connect(defaultdb)
+        c  = conn.cursor()
+        c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
+            """, (date))
+        symbols = c.fetchall()
+        conn.commit()
+        c.close()
+        return symbols
