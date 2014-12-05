@@ -7,18 +7,18 @@ def create():
     c.execute(""" CREATE TABLE 'stocks'(
         'id' INTEGER PRIMARY KEY,
         'symbol' VARCHAR,
-        'date' DATE,
-        'change' VARCHAR,
-        'change_number' INTEGER
+        'the_date' DATE,
+        'change' INTEGER
         )""")
     c.execute("DROP TABLE IF EXISTS 'predictions'")
     c.execute(""" CREATE TABLE 'predictions'(
         'id' INTEGER PRIMARY KEY,
         'symbol' INTEGER,
-        'date' DATE,        
-        'prediction' VARCHAR,
-        'prediction_number' INTEGER,
+        'the_date' DATE,        
         'website' VARCHAR,
+        'correct' VARCHAR,
+        'prediction' VARCHAR,
+        'prediction_number' INTEGER
         )""")    
     conn.commit()
     c.close()
