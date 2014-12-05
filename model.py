@@ -4,7 +4,7 @@ import datetime
 default_db = 'pred.db'
 
 
-class Evaluations(object):
+class Evaluation(object):
     @staticmethod
     def get_all_todays():
         return Database.all_todays()
