@@ -2,6 +2,7 @@ import requests
 import bs4
 import json
 
+
 class Scrape_predictwallstreet(object):
     def __init__(self):
         self.response = requests.get('http://www.predictwallstreet.com/Forecasts/')
@@ -18,11 +19,11 @@ class Scrape_predictwallstreet(object):
             pred = row.select('td span')[0].get_text()
             prediction["symbol"] = symbol
             prediction["prediction"] = pred
+            pred["website"] = "predictwallstreet"            
             todays.append(prediction)
         return todays
 
 
-#rule:1 buy, rule:2 sell
 class Scrape_stockforcasting(object):
     def __init__(self, symbols):    
         self.symbols = symbols
@@ -39,6 +40,7 @@ class Scrape_stockforcasting(object):
             rule = split_list[13][:1]
             pred["symbol"] = symbol
             pred["prediction"] = "up" if rule == '1' else 'down'
+            pred["website"] = "stock-forecasting"
             all_preds.append(pred)
         return all_preds
 
@@ -60,4 +62,3 @@ class Stock_history(object):
             stock["change"] = change
             hist.append(stock)
         return hist
-        

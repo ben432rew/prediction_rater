@@ -4,8 +4,6 @@ import datetime
 default_db = 'pred.db'
 
 
-
-
 #predictions should be weighted by how much they changed, not just whether
 #they went up or down
 class Evaluation(object):
@@ -26,7 +24,7 @@ class Stock(object):
 
 
 class Prediction(object):
-    def __init__(self, symbol, the_date, prediction, website, correct, prediction_number="None"):
+    def __init__(self, symbol, the_date, prediction, website, correct="unknown", prediction_number="None"):
         self.symbol = symbol
         self.the_date = the_date
         self.website = website
