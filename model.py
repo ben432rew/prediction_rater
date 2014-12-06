@@ -68,15 +68,22 @@ class Database(object):
         return p
 
     @staticmethod
-    def daily_correct(pred):
+    def daily_correct(stock):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
-            symbol = (?) AND the_date = (?)
-            """, (pred.correct, pred.symbol, pred.the_date))        
+        c.execute("""SELECT id,prediction FROM predictions WHERE the_date=(?) AND 
+            symbol = (?)""", (stock.symbol, stock.the_date))
+        predictions = c.fetchall()
+        for prediction in predictions:
+            if (prediction[1] == "up" and stock.change > 0) or (prediction[1] == "down" and stock.change < 0):
+                c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
+                    id = (?)""", ("correct", prediction[0]))
+            else:
+                c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
+                    id = (?)""", ("incorrect", prediction[0]))                
         conn.commit()
         c.close()
-        return pred
+        return stock
 
     @staticmethod
     def all_todays():
@@ -95,6 +102,17 @@ class Database(object):
 
     @staticmethod
     def get_symbols_by_date(date):
+        conn = sqlite3.connect(defaultdb)
+        c  = conn.cursor()
+        c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
+            """, (date))
+        symbols = c.fetchall()
+        conn.commit()
+        c.close()
+        return symbols
+
+    @staticmethod
+    def get_all_web_predicts(website):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
