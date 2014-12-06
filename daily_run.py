@@ -7,7 +7,7 @@ import datetime
 class Daily_duties(object):
     self.todays_predicts = daily_check()
     self.save_predicts()
-    self.yesterdays_predicts = model.Database.get_symbols_by_date(datetime.datetime.today() - datetime.timedelta(days=1))
+    self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.datetime.today() - datetime.timedelta(days=1))
     self.yesterday_changes()
 
     def daily_check(self):
@@ -24,7 +24,14 @@ class Daily_duties(object):
             model.Database.insert_pred(p)
 
     def yesterday_changes
-        pass
+        s = collect_info.Stock_history(self.yesterdays_symbols)
+        for stock in s.history:
+            change_number = int(stock["change"][1:])
+            change = change_number if stock["change"][:1] == "+" else (-1) * change_number
+            st_obj = model.Stock(stock["symbol"], datetime.datetime.today() - datetime.timedelta(days=1), change_number)
+#how we gonna do this?
+            model.Database.daily_correct()
+
         #store actual stocks from yesterday
         #update prediction results (correct or no)
 

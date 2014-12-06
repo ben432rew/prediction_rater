@@ -13,11 +13,10 @@ class Evaluation(object):
 
 
 class Stock(object):
-    def __init__(self, symbol, the_date, change, change_number):
+    def __init__(self, symbol, the_date, change):
         self.symbol = symbol
         self.the_date = the_date
         self.change = change
-        self.change_number = change_number
 
     def get_todays(self):
         return Database.todays_pred(self)
@@ -57,11 +56,11 @@ class Database(object):
         return pred
 
     @staticmethod
-    def todays_pred(stock):
+    def todays_pred(pred):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT * FROM predictions WHERE the_date=(?) AND 
-            symbol = (?)""", (self.symbol, self.the_date))
+            symbol = (?)""", (pred.symbol, pred.the_date))
         pred = c.fetchone()[0]
         p = Prediction(pred[1], pred[2], pred[3], pred[4], pred[5], pred[6])
         conn.commit()
@@ -74,7 +73,7 @@ class Database(object):
         c  = conn.cursor()
         c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
             symbol = (?) AND the_date = (?)
-            """, (self.correct, self.symbol, self.the_date))        
+            """, (pred.correct, pred.symbol, pred.the_date))        
         conn.commit()
         c.close()
         return pred
