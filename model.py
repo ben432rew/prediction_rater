@@ -150,6 +150,7 @@ class Database(object):
         c.close()
         return total
 
+#sql not working correctly
     @staticmethod
     def correct_non_negligable(website):
         conn = sqlite3.connect(defaultdb)

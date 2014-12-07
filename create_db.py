@@ -1,5 +1,6 @@
 import sqlite3
 
+#this should only be one table, predictions, with 'actual_change' column added
 def create():
     conn = sqlite3.connect("pred.db")
     c = conn.cursor()
