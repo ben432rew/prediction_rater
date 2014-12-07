@@ -55,8 +55,7 @@ class Stock_history(object):
         hist = []
         for symbol in self.symbols:
             stock = {}
-            #change symbol back to symbol[0] here
-            res = requests.get('http://dev.markitondemand.com/Api/v2/Quote/json?symbol=' + symbol)
+            res = requests.get('http://dev.markitondemand.com/Api/v2/Quote/json?symbol=' + symbol[0])
             the_json = res.json()
             if "ChangePercent" in the_json.keys():
                 stock["symbol"] = symbol[0]
@@ -68,11 +67,13 @@ class Stock_history(object):
 
     def backup_lookup(self, symbol):
         stock = {}
-        #change symbol back to symbol[0] here
-        res = requests.get('https://www.quandl.com/c/stocks/' + symbol)
+        res = requests.get('https://www.quandl.com/c/stocks/' + symbol[0])
         html_string = res.text
         soup = bs4.BeautifulSoup(html_string)
+        print("symbol[0]: ", symbol[0])
+        print("soup: ", soup)
+        print("h1: ", soup.select("h1"))
         change = soup.select("h1 span")[0].get_text()
-        stock["symbol"] = symbol
+        stock["symbol"] = symbol[0]
         stock["change"] = float(change[1:-1]) if change[0] == "+" else float(change[1:-1]) * -1
         return stock

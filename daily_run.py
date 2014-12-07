@@ -2,7 +2,7 @@ import model
 import collect_info
 import datetime
 
-#every weekday at 8am this script should be run, for linux set in 
+#every day Monday-Saturday at 8am this script should be run, for linux set in 
 #for testing, change date in the definition of self.yesterdays_symbols
 #and in the definition of yesterday from the first line in yesterdays_changes
 #to equal today
