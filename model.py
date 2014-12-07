@@ -19,13 +19,14 @@ class Evaluation(object):
                     correct += 1
                 elif x == "incorrect":
                     incorrect += 1
-#for testing purposes:
+#for testing purposes, can get rid of after the database gets some acutal data in it
             if correct == 0 and incorrect == 0:
                 all_results.append({"ratio":1.3, "website":website})
             else:
                 all_results.append({"ratio":correct/incorrect, "website":website})
         return all_results
 
+    # def correct_
 
 class Stock(object):
     def __init__(self, symbol, the_date, change):
@@ -38,13 +39,12 @@ class Stock(object):
 
 
 class Prediction(object):
-    def __init__(self, symbol, the_date, prediction, website, correct="unknown", prediction_number="None"):
+    def __init__(self, symbol, the_date, prediction, website, correct="unknown"):
         self.symbol = symbol
         self.the_date = the_date
         self.website = website
         self.correct = correct
         self.prediction = prediction
-        self.prediction_number = prediction_number
 
 
 class Database(object):
@@ -64,8 +64,8 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""INSERT INTO predictions(symbol, the_date, prediction, 
-            prediction_number, website, correct) VALUES (?,?,?,?,?,?)
-            """,(pred.symbol, pred.the_date, pred.prediction, pred.prediction_number, pred.website, pred.correct))        
+            website, correct) VALUES (?,?,?,?,?)
+            """,(pred.symbol, pred.the_date, pred.prediction, pred.website, pred.correct))        
         conn.commit()
         c.close()
         return pred
@@ -87,15 +87,16 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT id,prediction FROM predictions WHERE the_date=(?) AND 
-            symbol = (?)""", (stock.symbol, stock.the_date))
+            symbol = (?)""", (stock.the_date, stock.symbol))
         predictions = c.fetchall()
+        print (predictions)
         for prediction in predictions:
-            if (prediction[1] == "up" and stock.change > 0) or (prediction[1] == "down" and stock.change < 0):
-                c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
-                    id = (?)""", ("correct", prediction[0]))
+            print (prediction)
+            if (prediction[1] == "Up" and stock.change > 0) or (prediction[1] == "Down" and stock.change < 0):
+                c.execute("""UPDATE predictions SET correct = (?) WHERE 
+                    id = (?)""",("correct", prediction[0]))
             else:
-                c.execute("""UPDATE predictions(correct) SET correct = (?) WHERE 
-                    id = (?)""", ("incorrect", prediction[0]))                
+                c.execute("""UPDATE predictions SET correct = (?) WHERE id = (?)""",("incorrect", prediction[0]))
         conn.commit()
         c.close()
         return stock
@@ -136,3 +137,12 @@ class Database(object):
         c.close()
         return total
 
+    @staticmethod
+    def correct_non_negligable(website):
+        conn = sqlite3.connect(defaultdb)
+        c  = conn.cursor()
+        c.execute("""SELECT correct FROM predictions WHERE website=(?)""", (website,))
+        total = c.fetchall()
+        conn.commit()
+        c.close()
+        return total

@@ -17,8 +17,7 @@ def create():
         'the_date' DATE,        
         'website' VARCHAR,
         'correct' VARCHAR,
-        'prediction' VARCHAR,
-        'prediction_number' INTEGER
+        'prediction' VARCHAR
         )""")    
     conn.commit()
     c.close()

@@ -10,7 +10,7 @@ class Daily_duties(object):
     def __init__(self):
         self.todays_predicts = self.daily_check()
         self.save_predicts()
-        self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.date.today() - datetime.timedelta(days=1))
+        self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.date.today())
         self.yesterday_changes()
 
     def daily_check(self):
@@ -27,7 +27,7 @@ class Daily_duties(object):
             model.Database.insert_pred(p)
 
     def yesterday_changes(self):
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        yesterday = datetime.date.today()
         s = collect_info.Stock_history(self.yesterdays_symbols)
         for stock in s.history:
             st_obj = model.Stock(stock["symbol"], yesterday, stock["change"])
