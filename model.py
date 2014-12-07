@@ -12,18 +12,13 @@ class Evaluation(object):
         all_results = []
         for website in websites:
             total = Database.total_correct(website)
-            correct = 0
-            incorrect = 0        
+            correct, incorrect = 0, 0
             for x in total:
-                if x == "correct":
+                if x[0] == "correct":
                     correct += 1
-                elif x == "incorrect":
+                elif x[0] == "incorrect":
                     incorrect += 1
-#for testing purposes, can get rid of after the database gets some acutal data in it
-            if correct == 0 and incorrect == 0:
-                all_results.append({"ratio":1.3, "website":website})
-            else:
-                all_results.append({"ratio":correct/incorrect, "website":website})
+            all_results.append({"percent":correct/(correct + incorrect) * 100, "website":website})
         return all_results
 
     # def correct_
@@ -94,9 +89,10 @@ class Database(object):
             print (prediction)
             if (prediction[1] == "Up" and stock.change > 0) or (prediction[1] == "Down" and stock.change < 0):
                 c.execute("""UPDATE predictions SET correct = (?) WHERE 
-                    id = (?)""",("correct", prediction[0]))
+                    id = (?)""", ("correct", prediction[0]))
             else:
-                c.execute("""UPDATE predictions SET correct = (?) WHERE id = (?)""",("incorrect", prediction[0]))
+                c.execute("""UPDATE predictions SET correct = (?) WHERE 
+                    id = (?)""", ("incorrect", prediction[0]))
         conn.commit()
         c.close()
         return stock
