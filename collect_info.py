@@ -20,7 +20,7 @@ class Scrape_predictwallstreet(object):
             pred = row.select('td span')[0].get_text()
             prediction["symbol"] = symbol
             prediction["prediction"] = pred
-            pred["website"] = "predictwallstreet"            
+            prediction["website"] = "predictwallstreet"            
             todays.append(prediction)
         return todays
 
@@ -40,7 +40,7 @@ class Scrape_stockforcasting(object):
             split_list = html_str.split(":")
             rule = split_list[13][:1]
             pred["symbol"] = symbol
-            pred["prediction"] = "up" if rule == '1' else 'down'
+            pred["prediction"] = "Up" if rule == '1' else 'Down'
             pred["website"] = "stock-forecasting"
             all_preds.append(pred)
         return all_preds
@@ -55,11 +55,24 @@ class Stock_history(object):
         hist = []
         for symbol in self.symbols:
             stock = {}
-            res = requests.get('https://www.quandl.com/c/stocks/' + symbol)
-            html_string = res.text
-            soup = bs4.BeautifulSoup(html_string)
-            change = soup.select("h1 span")[0].get_text()
-            stock["symbol"] = symbol
-            stock["change"] = change
-            hist.append(stock)
+            #change symbol back to symbol[0] here
+            res = requests.get('http://dev.markitondemand.com/Api/v2/Quote/json?symbol=' + symbol)
+            the_json = res.json()
+            if "ChangePercent" in the_json.keys():
+                stock["symbol"] = symbol[0]
+                stock["change"] = the_json["ChangePercent"]
+                hist.append(stock)
+            else:
+                hist.append(self.backup_lookup(symbol))
         return hist
+
+    def backup_lookup(self, symbol):
+        stock = {}
+        #change symbol back to symbol[0] here
+        res = requests.get('https://www.quandl.com/c/stocks/' + symbol)
+        html_string = res.text
+        soup = bs4.BeautifulSoup(html_string)
+        change = soup.select("h1 span")[0].get_text()
+        stock["symbol"] = symbol
+        stock["change"] = float(change[1:-1]) if change[0] == "+" else float(change[1:-1]) * -1
+        return stock

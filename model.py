@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 
-default_db = 'pred.db'
+defaultdb = 'pred.db'
 
 
 #predictions should be weighted by how much they changed, not just whether
@@ -49,7 +49,7 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""INSERT INTO stocks(symbol, the_date, change) 
-            VALUES (?,?,?,?)
+            VALUES (?,?,?)
             """,(s.symbol, s.the_date, s.change))   
         conn.commit()
         c.close()
@@ -60,7 +60,7 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""INSERT INTO predictions(symbol, the_date, prediction, 
-            prediction_number, website, correct) VALUES (?,?,?,?,?)
+            prediction_number, website, correct) VALUES (?,?,?,?,?,?)
             """,(pred.symbol, pred.the_date, pred.prediction, pred.prediction_number, pred.website, pred.correct))        
         conn.commit()
         c.close()
@@ -115,7 +115,7 @@ class Database(object):
     def get_symbols_by_date(date):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
+        c.execute("""SELECT DISTINCT symbol FROM predictions WHERE the_date=(?)
             """, (date,))
         symbols = c.fetchall()
         conn.commit()

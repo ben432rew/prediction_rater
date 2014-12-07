@@ -11,3 +11,5 @@ class Controller(object):
         results = model.Evaluation.correct_not_ratios(collect_info.websites)
         view.show_evaluations(results)
 
+
+here = Controller()
