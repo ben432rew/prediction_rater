@@ -4,24 +4,39 @@ import datetime
 defaultdb = 'pred.db'
 
 
-#predictions should be weighted by how much they changed, not just whether
-#they went up or down
 class Evaluation(object):
     @staticmethod
-    def correct_not_ratios(websites):
+    def _add_corrects(total):
+        correct, incorrect = 0, 0
+        for x in total:
+            if x[0] == "correct":
+                correct += 1
+            elif x[0] == "incorrect":
+                incorrect += 1
+        return {"correct":correct, "incorrect":incorrect}
+
+    @staticmethod
+    def correct_percent(websites):
         all_results = []
         for website in websites:
             total = Database.total_correct(website)
-            correct, incorrect = 0, 0
-            for x in total:
-                if x[0] == "correct":
-                    correct += 1
-                elif x[0] == "incorrect":
-                    incorrect += 1
-            all_results.append({"percent":correct/(correct + incorrect) * 100, "website":website})
+            c_n_i = _add_corrects(total)
+            all_results.append({"percent":c_n_i["correct"]/(c_n_i["correct"] + c_n_i["incorrect"]) * 100, "website":website})
         return all_results
 
-    # def correct_
+    @staticmethod
+    def non_marginal_correct(websites):
+        all_results = []
+        for website in websites:
+            total = Database.correct_non_negligable(website)
+            c_n_i = _add_corrects(total)
+            all_results.append({"percent":c_n_i["correct"]/(c_n_i["correct"] + c_n_i["incorrect"]) * 100, "website":website})
+        return all_results
+
+    @staticmethod
+    def consistent_winnners(websites):
+        pass
+
 
 class Stock(object):
     def __init__(self, symbol, the_date, change):
@@ -137,7 +152,8 @@ class Database(object):
     def correct_non_negligable(website):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT correct FROM predictions WHERE website=(?)""", (website,))
+        c.execute("""SELECT correct FROM predictions AS P INNER JOIN stocks AS S
+            ON P.the_date = S.the_date AND P.symbol = S.symbol WHERE website=(?)""", (website,))
         total = c.fetchall()
         conn.commit()
         c.close()

@@ -8,8 +8,17 @@ class Controller(object):
         self.evaluations()
 
     def evaluations(self):
-        results = model.Evaluation.correct_not_ratios(collect_info.websites)
+        results = model.Evaluation.correct_percent(collect_info.websites)
         view.show_evaluations(results)
+        non_margs = model.Evaluation.non_marginal_correct(collect_info.websites)
+        choice = view.show_non_marginal(non_margs)
+        if choice == "y":
+            self.todays_predictions()
+        else:
+            return True
+
+    def todays_predictions(self):
+        pass
 
 
 here = Controller()
