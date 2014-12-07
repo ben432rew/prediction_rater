@@ -13,16 +13,22 @@ def welcome():
     print("\n\n\n\n\n\n\n\n")
 
 def show_evaluations(results):
-    print("Here is percentage of correct predictions:\n")
+    print("Here is percentage of correct predictions:")
+    print("-----------------------------------------------------")
     for result in results:
         print("The website {} has a {}% success rate".format(result["website"], round(result["percent"])))
+    print("-----------------------------------------------------")        
 
 def show_non_marginal(results):
-    print("\nHere are the percentages, but with margins of less than .1 percent discounted:\n")
+    print("\nHere are the percentages, but with margins of less than .1 percent discounted:")
+    print("-----------------------------------------------------")  
     for result in results:
-        print("The website {} has a %{} percent success rate".format(result["website"], result["percent"]))
-    print("\n\n\n")
+        print("The website {} has a {}% success rate".format(result["website"], round(result["percent"])))
+    print("-----------------------------------------------------")    
     return get_input('y','q', "would you like to see today's predictions?  Press 'Y' to see them, or 'Q' to Quit")
 
 def show_todays(results):
     pass
+
+def show_consistent_winners(results):
+    pass    

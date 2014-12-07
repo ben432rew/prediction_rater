@@ -20,7 +20,7 @@ class Evaluation(object):
         all_results = []
         for website in websites:
             total = Database.total_correct(website)
-            c_n_i = _add_corrects(total)
+            c_n_i = Evaluation._add_corrects(total)
             all_results.append({"percent":c_n_i["correct"]/(c_n_i["correct"] + c_n_i["incorrect"]) * 100, "website":website})
         return all_results
 
@@ -29,10 +29,11 @@ class Evaluation(object):
         all_results = []
         for website in websites:
             total = Database.correct_non_negligable(website)
-            c_n_i = _add_corrects(total)
+            c_n_i = Evaluation._add_corrects(total)
             all_results.append({"percent":c_n_i["correct"]/(c_n_i["correct"] + c_n_i["incorrect"]) * 100, "website":website})
         return all_results
 
+#here we'd show the stocks that consistenly perform as predicted
     @staticmethod
     def consistent_winnners(websites):
         pass
@@ -144,6 +145,7 @@ class Database(object):
         c  = conn.cursor()
         c.execute("""SELECT correct FROM predictions WHERE website=(?)""", (website,))
         total = c.fetchall()
+        print(total)
         conn.commit()
         c.close()
         return total
@@ -153,8 +155,10 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT correct FROM predictions AS P INNER JOIN stocks AS S
-            ON P.the_date = S.the_date AND P.symbol = S.symbol WHERE website=(?)""", (website,))
+            ON P.the_date = S.the_date AND P.symbol = S.symbol WHERE website=(?)
+            AND S.change > .1 OR S.change < -.1""", (website,))
         total = c.fetchall()
+        print(total)
         conn.commit()
         c.close()
         return total
