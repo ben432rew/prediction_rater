@@ -19,7 +19,11 @@ class Evaluation(object):
                     correct += 1
                 elif x == "incorrect":
                     incorrect += 1
-            all_results.append({"ratio":correct/incorrect, "website":website})
+#for testing purposes:
+            if correct == 0 and incorrect == 0:
+                all_results.append({"ratio":1.3, "website":website})
+            else:
+                all_results.append({"ratio":correct/incorrect, "website":website})
         return all_results
 
 

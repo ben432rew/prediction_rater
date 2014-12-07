@@ -13,11 +13,10 @@ def welcome():
     print("\n\n\n\n\n\n\n\n")
 
 def show_evaluations(results):
-    print("Here is the ratio of correct to incorrect predictions:")
+    print("Here is the ratio of correct to incorrect predictions:\n")
     for result in results:
         print("The website {} has a {} ratio of correct to incorrect predictions".format(result["website"], result["ratio"]))
-
-    print("Here are the ratios, but only changes of .1 percent or more are counted:")
-    # for website in websites:
+    print("\nHere are the ratios, but with margins of less than .1 percent discounted:")
+        # for website in websites:
 
 

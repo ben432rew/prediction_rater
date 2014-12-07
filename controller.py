@@ -7,7 +7,7 @@ class Controller(object):
         view.welcome()
         self.evaluations()
 
-    def evaluations():
+    def evaluations(self):
         results = model.Evaluation.correct_not_ratios(collect_info.websites)
         view.show_evaluations(results)
 
