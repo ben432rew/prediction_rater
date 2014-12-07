@@ -2,6 +2,7 @@ import requests
 import bs4
 import json
 
+websites = ["predictwallstreet", "stock-forecasting"]
 
 class Scrape_predictwallstreet(object):
     def __init__(self):

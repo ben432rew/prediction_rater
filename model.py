@@ -8,8 +8,19 @@ default_db = 'pred.db'
 #they went up or down
 class Evaluation(object):
     @staticmethod
-    def get_all_todays():
-        return Database.all_todays()
+    def correct_not_ratios(websites):
+        all_results = []
+        for website in websites:
+            total = Database.total_correct(website)
+            correct = 0
+            incorrect = 0        
+            for x in total:
+                if x == "correct":
+                    correct += 1
+                elif x == "incorrect":
+                    incorrect += 1
+            all_results.append({"ratio":correct/incorrect, "website":website})
+        return all_results
 
 
 class Stock(object):
@@ -105,19 +116,19 @@ class Database(object):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
-            """, (date))
+            """, (date,))
         symbols = c.fetchall()
         conn.commit()
         c.close()
         return symbols
 
     @staticmethod
-    def get_all_web_predicts(website):
+    def total_correct(website):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT symbol FROM predictions WHERE the_date=(?)
-            """, (date))
-        symbols = c.fetchall()
+        c.execute("""SELECT correct FROM predictions WHERE website=(?)""", (website,))
+        total = c.fetchall()
         conn.commit()
         c.close()
-        return symbols
+        return total
+

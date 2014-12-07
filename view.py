@@ -8,15 +8,16 @@ def get_input(x, y, string):
 def welcome():
     print("\n\n\n\n\n\n\n\n")     
     print("-------------------------------------------")
-    print("Welcome to the Fortune Teller Evaluator")
+    print("Welcome to the StockHotOrNot (rate my fortune teller)")
     print("-------------------------------------------")       
     print("\n\n\n\n\n\n\n\n")
 
-def show_evaluations(websites):
+def show_evaluations(results):
     print("Here is the ratio of correct to incorrect predictions:")
-    for website in websites:
+    for result in results:
+        print("The website {} has a {} ratio of correct to incorrect predictions".format(result["website"], result["ratio"]))
 
     print("Here are the ratios, but only changes of .1 percent or more are counted:")
-    for website in websites:
+    # for website in websites:
 
 
