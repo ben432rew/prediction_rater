@@ -49,9 +49,9 @@ class Scrape_stockforcasting(object):
 class Stock_history(object):
     def __init__(self, symbols):
         self.symbols = symbols
-        self.history = self.get_yesterday()
+        self.history = self.yester_stock_via_api()
 
-    def get_yesterday(self):
+    def yester_stock_via_api(self):
         hist = []
         for symbol in self.symbols:
             stock = {}
@@ -62,18 +62,15 @@ class Stock_history(object):
                 stock["change"] = the_json["ChangePercent"]
                 hist.append(stock)
             else:
-                hist.append(self.backup_lookup(symbol))
+                hist.append(self.backup_scraper(symbol[0]))
         return hist
 
-    def backup_lookup(self, symbol):
+    def backup_scraper(self, symbol):
         stock = {}
-        res = requests.get('https://www.quandl.com/c/stocks/' + symbol[0])
+        res = requests.get('https://www.quandl.com/c/stocks/' + symbol.lower())
         html_string = res.text
         soup = bs4.BeautifulSoup(html_string)
-        print("symbol[0]: ", symbol[0])
-        print("soup: ", soup)
-        print("h1: ", soup.select("h1"))
         change = soup.select("h1 span")[0].get_text()
-        stock["symbol"] = symbol[0]
+        stock["symbol"] = symbol
         stock["change"] = float(change[1:-1]) if change[0] == "+" else float(change[1:-1]) * -1
         return stock
