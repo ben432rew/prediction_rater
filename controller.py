@@ -22,5 +22,9 @@ class Controller(object):
         predicts = model.Database.all_predicts_by_date(datetime.date.today())
         return view.show_todays(predicts)
 
+    def consistent_winners(self):
+        winners = model.Evaluation.consistent_winnners()
+        view.show_consistent_winners(winners)
+
 
 here = Controller()

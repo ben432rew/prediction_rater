@@ -32,10 +32,10 @@ class Evaluation(object):
             all_results.append({"percent":c_n_i["correct"]/total[0] * 100, "website":website})
         return all_results
 
-#here we'd show the stocks that consistenly perform as predicted
+#here we'd show the stocks that perform as predicted more than 65% of time
     @staticmethod
-    def consistent_winnners(websites):
-        pass
+    def consistent_winnners():
+        predictions = Database.all_with_results()
 
 
 class Stock_history(object):
@@ -95,28 +95,30 @@ class Database(object):
         c.close()
         return stock
 
+#wtf where is the bug
     @staticmethod
     def all_predicts_by_date(date):
+        predictions = []
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT * FROM predictions WHERE the_date=(?) ORDER BY 
             website""", (date,))
-        predictions = []
         preds = c.fetchall()
         for p in preds:
             next_one = Prediction(p[1], p[2], p[3], p[4], p[5], p[6])
             predictions.append(next_one)
         conn.commit()
         c.close()
+        print(predictions)
         return predictions
 
-    @staticmethod
-    def symbols_by_date(date):
-        predictions = Database.all_predicts_by_date(date)
-        symbols = []
-        for p in predictions:
-            symbols.append(p.symbol)
-        return symbols
+    # @staticmethod
+    # def symbols_by_date(date):
+    #     predictions = Database.all_predicts_by_date(date)
+    #     symbols = []
+    #     for p in predictions:
+    #         symbols.append(p.symbol)
+    #     return symbols
 
 #this method will be replaced by the one above as soon as I chase down the bug
     @staticmethod
@@ -152,3 +154,13 @@ class Database(object):
         conn.commit()
         c.close()
         return [count] + total
+
+    def all_with_results():
+        conn = sqlite3.connect(defaultdb)
+        c  = conn.cursor()
+        c.execute("""SELECT * FROM predictions WHERE correct != unknown 
+            ORDER BY symbol""")
+        total = c.fetchall()
+        conn.commit()
+        c.close()
+        return total
