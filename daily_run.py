@@ -6,7 +6,6 @@ import datetime
 #for testing, change date in the definition of self.yesterdays_symbols
 #and in the definition of yesterday from the first line in yesterdays_changes
 #to equal today
-#yesterday definition doesn't account for weekends!
 class Daily_duties(object):
     def __init__(self):
         self.todays_predicts = self.get_predicts()
