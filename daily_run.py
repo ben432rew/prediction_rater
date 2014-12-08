@@ -11,7 +11,7 @@ class Daily_duties(object):
     def __init__(self):
         self.todays_predicts = self.get_predicts()
         self.save_predicts()
-        self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.date.today() - datetime.timedelta(days=1))
+        self.yesterdays_symbols = model.Database.symbols_by_date(datetime.date.today() - datetime.timedelta(days=1))
         self.yesterday_changes()
 
     def get_predicts(self):
