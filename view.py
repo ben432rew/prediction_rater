@@ -7,10 +7,10 @@ def get_input(x, y, string):
 
 def welcome():
     print("\n\n\n\n\n\n\n\n")     
-    print("-----------------------------------------------------")
+    print("*****************************************************")
     print("Welcome to the StockHotOrNot (rate my fortune teller)")
-    print("-----------------------------------------------------")       
-    print("\n\n\n\n\n\n\n\n")
+    print("*****************************************************")       
+    print("\n\n\n\n\n\n")
 
 def show_evaluations(results):
     print("Here is percentage of correct predictions:")
@@ -28,7 +28,7 @@ def show_non_marginal(results):
     return get_input('y','q', "would you like to see today's predictions?  Press 'Y' to see them, or 'Q' to Quit")
 
 def show_todays(results):
-    pass
+    print("\n\n Here are todays predictions:")
 
 def show_consistent_winners(results):
     pass    

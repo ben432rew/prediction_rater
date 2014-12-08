@@ -1,5 +1,4 @@
 import sqlite3
-import datetime
 
 defaultdb = 'pred.db'
 
@@ -29,8 +28,8 @@ class Evaluation(object):
         all_results = []
         for website in websites:
             total = Database.correct_non_negligable(website)
-            c_n_i = Evaluation._add_corrects(total)
-            all_results.append({"percent":c_n_i["correct"]/(c_n_i["correct"] + c_n_i["incorrect"]) * 100, "website":website})
+            c_n_i = Evaluation._add_corrects(total[1:])
+            all_results.append({"percent":c_n_i["correct"]/total[0] * 100, "website":website})
         return all_results
 
 #here we'd show the stocks that consistenly perform as predicted
@@ -39,33 +38,30 @@ class Evaluation(object):
         pass
 
 
-class Stock(object):
+class Stock_history(object):
     def __init__(self, symbol, the_date, change):
         self.symbol = symbol
         self.the_date = the_date
         self.change = change
 
-    def get_todays(self):
-        return Database.todays_pred(self)
-
 
 class Prediction(object):
-    def __init__(self, symbol, the_date, prediction, website, correct="unknown"):
+    def __init__(self, symbol, the_date, prediction, website, correct="unknown", actual_change="unknown"):
         self.symbol = symbol
         self.the_date = the_date
         self.website = website
         self.correct = correct
         self.prediction = prediction
+        self.actual_change = actual_change
 
 
 class Database(object):
     @staticmethod
-    def insert_stock(s):
+    def insert_changes(s):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""INSERT INTO stocks(symbol, the_date, change) 
-            VALUES (?,?,?)
-            """,(s.symbol, s.the_date, s.change))   
+        c.execute("""UPDATE predictions SET actual_change = (?) WHERE the_date =
+            (?) AND symbol = (?)""",(s.change, s.the_date, s.symbol))   
         conn.commit()
         c.close()
         return s
@@ -82,27 +78,13 @@ class Database(object):
         return pred
 
     @staticmethod
-    def todays_pred(pred):
-        conn = sqlite3.connect(defaultdb)
-        c  = conn.cursor()
-        c.execute("""SELECT * FROM predictions WHERE the_date=(?) AND 
-            symbol = (?)""", (pred.symbol, pred.the_date))
-        pred = c.fetchone()[0]
-        p = Prediction(pred[1], pred[2], pred[3], pred[4], pred[5], pred[6])
-        conn.commit()
-        c.close()
-        return p
-
-    @staticmethod
-    def daily_correct(stock):
+    def daily_corrections(stock):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
         c.execute("""SELECT id,prediction FROM predictions WHERE the_date=(?) AND 
             symbol = (?)""", (stock.the_date, stock.symbol))
         predictions = c.fetchall()
-        print (predictions)
         for prediction in predictions:
-            print (prediction)
             if (prediction[1] == "Up" and stock.change > 0) or (prediction[1] == "Down" and stock.change < 0):
                 c.execute("""UPDATE predictions SET correct = (?) WHERE 
                     id = (?)""", ("correct", prediction[0]))
@@ -114,11 +96,10 @@ class Database(object):
         return stock
 
     @staticmethod
-    def all_todays():
+    def all_predicts_by_date(date):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT * FROM predictions WHERE the_date=(?)
-            """, (datetime.datetime.today()))
+        c.execute("""SELECT * FROM predictions WHERE the_date=(?)""", (date,))
         predictions = []
         preds = c.fetchall()
         for p in preds:
@@ -145,21 +126,19 @@ class Database(object):
         c  = conn.cursor()
         c.execute("""SELECT correct FROM predictions WHERE website=(?)""", (website,))
         total = c.fetchall()
-        print(total)
         conn.commit()
         c.close()
         return total
 
-#sql not working correctly
     @staticmethod
     def correct_non_negligable(website):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT correct FROM predictions AS P INNER JOIN stocks AS S
-            ON P.the_date = S.the_date AND P.symbol = S.symbol WHERE website=(?)
-            AND S.change > .1 OR S.change < -.1""", (website,))
+        c.execute("""SELECT COUNT(prediction) FROM predictions WHERE website = (?)""", (website,))
+        count = c.fetchone()[0]
+        c.execute("""SELECT correct FROM predictions WHERE website=(?)
+            AND (actual_change > .1 OR actual_change < -.1)""", (website,))
         total = c.fetchall()
-        print(total)
         conn.commit()
         c.close()
-        return total
+        return [count] + total

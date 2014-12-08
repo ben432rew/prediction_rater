@@ -1,6 +1,7 @@
 import model
 import collect_info
 import view
+import datetime
 
 class Controller(object):
     def __init__(self):
@@ -18,7 +19,8 @@ class Controller(object):
             return True
 
     def todays_predictions(self):
-        pass
+        predicts = model.Database.all_predicts_by_date(datetime.date.today())
+        return view.show_todays(predicts)
 
 
 here = Controller()

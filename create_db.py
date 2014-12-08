@@ -1,16 +1,9 @@
 import sqlite3
 
-#this should only be one table, predictions, with 'actual_change' column added
 def create():
     conn = sqlite3.connect("pred.db")
     c = conn.cursor()
     c.execute("DROP TABLE IF EXISTS 'stocks'")
-    c.execute(""" CREATE TABLE 'stocks'(
-        'id' INTEGER PRIMARY KEY,
-        'symbol' VARCHAR,
-        'the_date' DATE,
-        'change' INTEGER
-        )""")
     c.execute("DROP TABLE IF EXISTS 'predictions'")
     c.execute(""" CREATE TABLE 'predictions'(
         'id' INTEGER PRIMARY KEY,
@@ -18,7 +11,8 @@ def create():
         'the_date' DATE,        
         'website' VARCHAR,
         'correct' VARCHAR,
-        'prediction' VARCHAR
+        'prediction' VARCHAR,
+        'actual_change' INTEGER
         )""")    
     conn.commit()
     c.close()
