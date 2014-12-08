@@ -28,7 +28,7 @@ def show_non_marginal(results):
     return get_input('y','q', "would you like to see today's predictions?  Press 'Y' to see them, or 'Q' to Quit")
 
 def show_todays(results):
-    print("\n\n Here are todays predictions:")
+    print("\nHere are todays predictions:\n")
     for r in results:
         print("{} predicts that {} will go {} today".format(r.website, r.symbol, r.prediction))
 

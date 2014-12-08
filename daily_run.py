@@ -6,11 +6,12 @@ import datetime
 #for testing, change date in the definition of self.yesterdays_symbols
 #and in the definition of yesterday from the first line in yesterdays_changes
 #to equal today
+#yesterday definition doesn't account for weekends!
 class Daily_duties(object):
     def __init__(self):
         self.todays_predicts = self.get_predicts()
         self.save_predicts()
-        self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.date.today())
+        self.yesterdays_symbols = model.Database.get_symbols_by_date(datetime.date.today() - datetime.timedelta(days=1))
         self.yesterday_changes()
 
     def get_predicts(self):
@@ -27,7 +28,7 @@ class Daily_duties(object):
             model.Database.insert_pred(p)
 
     def yesterday_changes(self):
-        yesterday = datetime.date.today()
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
         s = collect_info.Stock_history(self.yesterdays_symbols)
         for stock in s.history:
             st_obj = model.Stock_history(stock["symbol"], yesterday, stock["change"])

@@ -95,7 +95,6 @@ class Database(object):
         c.close()
         return stock
 
-#wtf where is the bug
     @staticmethod
     def all_predicts_by_date(date):
         predictions = []
@@ -105,31 +104,16 @@ class Database(object):
             website""", (date,))
         preds = c.fetchall()
         for p in preds:
-            next_one = Prediction(p[1], p[2], p[3], p[4], p[5], p[6])
+            next_one = Prediction(p[1], p[2], p[5], p[3], p[4], p[6])
             predictions.append(next_one)
         conn.commit()
         c.close()
-        print(predictions)
         return predictions
 
-    # @staticmethod
-    # def symbols_by_date(date):
-    #     predictions = Database.all_predicts_by_date(date)
-    #     symbols = []
-    #     for p in predictions:
-    #         symbols.append(p.symbol)
-    #     return symbols
-
-#this method will be replaced by the one above as soon as I chase down the bug
     @staticmethod
-    def get_symbols_by_date(date):
-        conn = sqlite3.connect(defaultdb)
-        c  = conn.cursor()
-        c.execute("""SELECT DISTINCT symbol FROM predictions WHERE the_date=(?)
-            """, (date,))
-        symbols = c.fetchall()
-        conn.commit()
-        c.close()
+    def symbols_by_date(date):
+        predictions = Database.all_predicts_by_date(date)
+        symbols = [p.symbol for p in predictions]
         return symbols
 
     @staticmethod
