@@ -29,6 +29,8 @@ def show_non_marginal(results):
 
 def show_todays(results):
     print("\n\n Here are todays predictions:")
+    for r in results:
+        print("{} predicts that {} will go {} today".format(r.website, r.symbol, r.prediction))
 
 def show_consistent_winners(results):
     pass    

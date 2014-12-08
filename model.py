@@ -99,7 +99,8 @@ class Database(object):
     def all_predicts_by_date(date):
         conn = sqlite3.connect(defaultdb)
         c  = conn.cursor()
-        c.execute("""SELECT * FROM predictions WHERE the_date=(?)""", (date,))
+        c.execute("""SELECT * FROM predictions WHERE the_date=(?) ORDER BY 
+            website""", (date,))
         predictions = []
         preds = c.fetchall()
         for p in preds:
@@ -109,6 +110,15 @@ class Database(object):
         c.close()
         return predictions
 
+    @staticmethod
+    def symbols_by_date(date):
+        predictions = Database.all_predicts_by_date(date)
+        symbols = []
+        for p in predictions:
+            symbols.append(p.symbol)
+        return symbols
+
+#this method will be replaced by the one above as soon as I chase down the bug
     @staticmethod
     def get_symbols_by_date(date):
         conn = sqlite3.connect(defaultdb)
