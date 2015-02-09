@@ -6,9 +6,4 @@ Different industries?
 Do all the websites have similar predictions?
 Which websites have been the most accurate overall this month?  Year?  Last 5 years?
 
-###Future Upgrades:
-compile installer that sets up crontab for user, so user doesn't have to manually set up crontab
-
-Add more sites to compare
-
-Figure out why daily_run.py takes so long
+This app scrapes daily stock prediction websites, stores the data, and allows you to view the statistics of the various websites.
