@@ -18,6 +18,8 @@ class Daily_duties(object):
 
         Returns: array of prediction objects
 
+        these objects all have 'symbol', 'prediction', and 'website' attributes
+
         '''
         todays_symbols = []
         pws = collect_info.Scrape_predictwallstreet()

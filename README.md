@@ -10,7 +10,6 @@ This app scrapes daily stock prediction websites, stores the data, and allows yo
 
 This application was written in Python (with a little SQLite3) using Model-View-Controller architectural pattern.  
 
-
 ### Setup:
 
 In directory you'd like to run the program, first clone the depository:
@@ -30,3 +29,4 @@ A few days after you've set your chron job, see the results so far in the user d
 `python3 controller.py`
 
 Enjoy!
+

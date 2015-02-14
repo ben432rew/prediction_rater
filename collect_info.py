@@ -4,6 +4,7 @@ import json
 
 websites = ["predictwallstreet", "stock-forecasting"]
 
+
 class Scrape_predictwallstreet(object):
     def __init__(self):
         self.response = requests.get('http://www.predictwallstreet.com/Forecasts/')

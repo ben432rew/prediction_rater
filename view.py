@@ -1,4 +1,5 @@
 def get_input(x, y, string):
+    ''' Unless user picks choice x or y, return given string and ask again'''
     choice = "None"
     while choice.lower() != x and choice.lower() != y:
         print(string)
