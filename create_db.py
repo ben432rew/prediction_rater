@@ -17,4 +17,5 @@ def create():
     conn.commit()
     c.close()
 
-create()
+if __name__ == "__main__":
+    create()

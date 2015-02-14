@@ -27,4 +27,5 @@ class Controller(object):
         view.show_consistent_winners(winners)
 
 
-here = Controller()
+if __name__ == "__main__":
+    Controller()

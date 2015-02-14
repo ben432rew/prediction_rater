@@ -2,7 +2,7 @@ import model
 import collect_info
 import datetime
 
-#every day Monday-Saturday at 8am this script should be run, for linux set in 
+
 #for testing, change date in the definition of self.yesterdays_symbols
 #and in the definition of yesterday from the first line in yesterdays_changes
 #to equal today
@@ -14,6 +14,11 @@ class Daily_duties(object):
         self.yesterday_changes()
 
     def get_predicts(self):
+        ''' Get particular stock predictions from chosen sites.
+
+        Returns: array of prediction objects
+
+        '''
         todays_symbols = []
         pws = collect_info.Scrape_predictwallstreet()
         for stock in pws.todays_predictions:
@@ -22,11 +27,13 @@ class Daily_duties(object):
         return pws.todays_predictions + ssf.predictions
 
     def save_predicts(self):
+        ''' Save new predictions to database'''     
         for pred in self.todays_predicts:
             p = model.Prediction(pred["symbol"], datetime.date.today(), pred["prediction"], pred["website"])
             model.Database.insert_pred(p)
 
     def yesterday_changes(self):
+        '''Update yesterday's stock predictions with actual changes in price'''
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         s = collect_info.Stock_history(self.yesterdays_symbols)
         for stock in s.history:
@@ -36,4 +43,5 @@ class Daily_duties(object):
         return s
 
 
-today = Daily_duties()
+if __name__ == "__main__":
+    Daily_duties()
